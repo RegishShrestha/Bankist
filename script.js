@@ -118,6 +118,13 @@ nav.addEventListener('mouseover', handleHover.bind(0.5));
 
 nav.addEventListener('mouseout', handleHover.bind(1));
 
+//sticky nabvar
+const initialCoords = section1.getBoundingClientRect();
+//practtise
+window.addEventListener('scroll', function () {
+  if (this.window.scrollY > initialCoords.top) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+});
 // h1.onmouseenter = function (e) {
 //   alert('heheh');
 // };
