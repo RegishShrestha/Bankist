@@ -8,6 +8,7 @@ const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const nav = document.querySelector('.nav');
+const dotContainer = document.querySelector('.dots');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -196,50 +197,71 @@ const stickyNav = function (entries) {
 // headerObserver.observe(header);
 
 //silder
-let currSlide = 0;
+const slider = function () {
+  let currSlide = 0;
 
-const slides = document.querySelectorAll('.slide');
+  const slides = document.querySelectorAll('.slide');
 
-const maxSlide = slides.length;
-const btnLeft = document.querySelector('.slider__btn--left');
-const btnRight = document.querySelector('.slider__btn--right');
+  const maxSlide = slides.length;
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
 
-// const slider = document.querySelector('.slider');
-// slider.style.transform = 'scale(0.4) translateX(-800px)';
-// slider.style.overflow = 'visible';
-// slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
+  // const slider = document.querySelector('.slider');
+  // slider.style.transform = 'scale(0.4) translateX(-800px)';
+  // slider.style.overflow = 'visible';
+  // slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
 
-const goToSlide = function (slide) {
-  slides.forEach(
-    (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
-  );
-};
+  //creating dots
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
 
-goToSlide(0);
+  //activate dots
+  const activateDots = function (slide) {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
 
-//next slide
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
 
-const nextSlide = function () {
-  if (currSlide === maxSlide - 1) {
-    currSlide = 0;
-  } else {
-    currSlide++;
-  }
-  goToSlide(currSlide);
-};
+  //next slide
 
-//previous slide
+  const nextSlide = function () {
+    if (currSlide === maxSlide - 1) {
+      currSlide = 0;
+    } else {
+      currSlide++;
+    }
+    goToSlide(currSlide);
+    activateDots(currSlide);
+  };
 
-const prevSlide = function () {
-  if (currSlide === 0) {
-    currSlide = maxSlide - 1;
-  } else {
-    currSlide--;
-  }
-  goToSlide(currSlide);
-};
+  //previous slide
 
-/*
+  const prevSlide = function () {
+    if (currSlide === 0) {
+      currSlide = maxSlide - 1;
+    } else {
+      currSlide--;
+    }
+    goToSlide(currSlide);
+    activateDots(currSlide);
+  };
+
+  /*
 btnRight.addEventListener('click', function () {
   if (currSlide === maxSlide - 1) {
     currSlide = 0;
@@ -250,10 +272,34 @@ btnRight.addEventListener('click', function () {
 });
 */
 
-//better version
-btnRight.addEventListener('click', nextSlide);
-btnLeft.addEventListener('click', prevSlide);
+  //better version
+  const init = function () {
+    createDots();
+    goToSlide(0);
+    activateDots(0);
+  };
+  init();
+  btnRight.addEventListener('click', nextSlide);
+  btnLeft.addEventListener('click', prevSlide);
 
+  document.addEventListener('keydown', function (e) {
+    if (e.key == 'ArrowRight') {
+      nextSlide();
+    } else if (e.key == 'ArrowLeft') {
+      prevSlide();
+    }
+  });
+
+  //shifting using dots
+
+  dotContainer.addEventListener('click', function (e) {
+    e.target.classList.contains('dots__dot');
+    const { slide } = e.target.dataset;
+    goToSlide(slide);
+    activateDots(slide);
+  });
+};
+slider();
 // h1.onmouseenter = function (e) {
 //   alert('heheh');
 // };
