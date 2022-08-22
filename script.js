@@ -123,7 +123,7 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 });
 allSection.forEach(function (section) {
   sectionObserver.observe(section);
-  section.classList.add('section--hidden');
+  // section.classList.add('section--hidden');
 });
 
 //Lazy loading Images
@@ -188,12 +188,71 @@ const stickyNav = function (entries) {
   else nav.classList.remove('sticky');
 };
 
-const headerObserver = new IntersectionObserver(stickyNav, {
-  root: null,
-  threshold: 0,
-  rootMargin: navHeight,
+// const headerObserver = new IntersectionObserver(stickyNav, {
+//   root: null,
+//   threshold: 0,
+//   rootMargin: navHeight,
+// });
+// headerObserver.observe(header);
+
+//silder
+let currSlide = 0;
+
+const slides = document.querySelectorAll('.slide');
+
+const maxSlide = slides.length;
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+
+// const slider = document.querySelector('.slider');
+// slider.style.transform = 'scale(0.4) translateX(-800px)';
+// slider.style.overflow = 'visible';
+// slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
+
+const goToSlide = function (slide) {
+  slides.forEach(
+    (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+  );
+};
+
+goToSlide(0);
+
+//next slide
+
+const nextSlide = function () {
+  if (currSlide === maxSlide - 1) {
+    currSlide = 0;
+  } else {
+    currSlide++;
+  }
+  goToSlide(currSlide);
+};
+
+//previous slide
+
+const prevSlide = function () {
+  if (currSlide === 0) {
+    currSlide = maxSlide - 1;
+  } else {
+    currSlide--;
+  }
+  goToSlide(currSlide);
+};
+
+/*
+btnRight.addEventListener('click', function () {
+  if (currSlide === maxSlide - 1) {
+    currSlide = 0;
+  } else {
+    currSlide++;
+  }
+  goToSlide(currSlide);
 });
-headerObserver.observe(header);
+*/
+
+//better version
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
 
 // h1.onmouseenter = function (e) {
 //   alert('heheh');
